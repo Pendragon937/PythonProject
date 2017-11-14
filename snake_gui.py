@@ -9,16 +9,11 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
 def load_image(name):
-    path = os.path.join(main_dir, 'data', name)
+    path = os.path.join(main_dir, name)
     return pygame.image.load(path).convert()
 
-class SpaceShip(object):
-    def __init__(self,p1,p2,p3):
-        SpaceShip.p1 = p1
-        SpaceShip.p2 = p2
-        SpaceShip.p3 = p3
-    def draw(self,screen):
-        pygame.draw.polygon(screen,RED,[self.p1,self.p2,self.p3])
+    
+
 
 
 def main():
@@ -37,9 +32,11 @@ def main():
             if event.type == QUIT:
                 done = True
 
+
+
         screen.fill(WHITE)
-        ship = SpaceShip([500,500],[511,525],[489,525])
-        ship.draw(screen)
+        ship = load_image('Ship.png')
+        screen.blit(ship,(500,500))
         # pygame.draw.line(screen,RED,[500,500],[525,525],5)
         # pygame.draw.line(screen,RED,[500,500],[475,525],5)
         # pygame.draw.line(screen,RED,[525,525],[475,525],5)
