@@ -1,33 +1,50 @@
-import pygame
+import os, pygame,math
 from pygame.locals import *
+
+main_dir = os.path.split(os.path.abspath(__file__))[0]
+
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+
+def load_image(name):
+    path = os.path.join(main_dir, 'data', name)
+    return pygame.image.load(path).convert()
+
+class SpaceShip(object):
+    def __init__(self,p1,p2,p3):
+        SpaceShip.p1 = p1
+        SpaceShip.p2 = p2
+        SpaceShip.p3 = p3
+    def draw(self,screen):
+        pygame.draw.polygon(screen,RED,[self.p1,self.p2,self.p3])
+
 
 def main():
     pygame.init() #initializes pygame
     screen = pygame.display.set_mode((1000,1000))
-    pygame.display.set_caption('Snake')
+    pygame.display.set_caption('Asteroid')
 
-    background = pygame.Surface((100,100))
-    background = background.convert()
-    background.fill((0,100,100))
+    done = False
+    clock = pygame.time.Clock()
 
-    # font = pygame.font.Font(None, 36)
-    # text = font.render("Hello There", 1, (10, 10, 10))
-    # textpos = text.get_rect()
-    # textpos.centerx = background.get_rect().centerx
-    # background.blit(text, textpos)
 
-    # Blit everything to the screen
-    screen.blit(background, (0, 0))
-    pygame.display.flip()
 
     # Event loop
-    while 1:
+    while not done:
         for event in pygame.event.get():
             if event.type == QUIT:
-                return
+                done = True
 
-        screen.blit(background, (0, 0))
-        pygame.display.flip() #updates screen
-
+        screen.fill(WHITE)
+        ship = SpaceShip([500,500],[525,525],[475,525])
+        ship.draw(screen)
+        # pygame.draw.line(screen,RED,[500,500],[525,525],5)
+        # pygame.draw.line(screen,RED,[500,500],[475,525],5)
+        # pygame.draw.line(screen,RED,[525,525],[475,525],5)
+        pygame.display.flip()
+        clock.tick(60)
+    pygame.quit()
 
 if __name__  == '__main__': main()
