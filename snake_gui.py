@@ -38,7 +38,7 @@ def main():
                 done = True
 
         screen.fill(WHITE)
-        ship = SpaceShip([500,500],[525,525],[475,525])
+        ship = SpaceShip([500,500],[511,525],[489,525])
         ship.draw(screen)
         # pygame.draw.line(screen,RED,[500,500],[525,525],5)
         # pygame.draw.line(screen,RED,[500,500],[475,525],5)
