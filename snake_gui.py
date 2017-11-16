@@ -13,7 +13,13 @@ def load_image(name):
     return pygame.image.load(path).convert()
 
     
-
+def rot_center(image,angle):
+    orig_rect = image.get_rect()
+    rot_image = pygame.transform.rotate(image, angle)
+    rot_rect = orig_rect.copy()
+    rot_rect.center = rot_image.get_rect().center
+    rot_image = rot_image.subsurface(rot_rect).copy()
+    return rot_image
 
 
 def main():
@@ -23,7 +29,10 @@ def main():
 
     done = False
     clock = pygame.time.Clock()
-
+    original = load_image('Ship.png')
+    ship = load_image('Ship.png')
+    center = [500, 500]
+    angle = 0
 
 
     # Event loop
@@ -31,11 +40,16 @@ def main():
         for event in pygame.event.get():
             if event.type == QUIT:
                 done = True
-
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    angle += 15
+                    ship = rot_center(original, angle)
+                elif event.key == pygame.K_RIGHT:
+                    angle -= 15
+                    ship = rot_center(original, angle)
 
 
         screen.fill(WHITE)
-        ship = load_image('Ship.png')
         screen.blit(ship,(500,500))
         Asteroid = load_image('Asteroid.png')
         screen.blit(Asteroid, (900,500))
