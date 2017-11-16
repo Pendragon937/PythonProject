@@ -51,11 +51,17 @@ def main():
 
         screen.fill(WHITE)
         screen.blit(ship,(500,500))
+
+        #Asteroid testing
         Asteroid = load_image('Asteroid.png')
+        Asteroid2 = load_image('Asteroid2.png')
+        Asteroid3 = load_image('Asteroid3.png')
         screen.blit(Asteroid, (900,500))
-        screen.blit(Asteroid, (100,500))
-        screen.blit(Asteroid, (500,100))
+        screen.blit(Asteroid2, (100,500))
+        screen.blit(Asteroid3, (500,100))
         screen.blit(Asteroid, (500,900))
+
+        
         # pygame.draw.line(screen,RED,[500,500],[525,525],5)
         # pygame.draw.line(screen,RED,[500,500],[475,525],5)
         # pygame.draw.line(screen,RED,[525,525],[475,525],5)
