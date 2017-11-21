@@ -12,6 +12,7 @@ def load_image(name):
     path = os.path.join(main_dir, name)
     return pygame.image.load(path).convert()
 
+
     
 def rot_center(image,angle):
     orig_rect = image.get_rect()
@@ -39,8 +40,8 @@ class Asteroid(pygame.sprite.Sprite):
         else:
             self.image = load_image('Asteroid3.png')
         self.rect = self.image.get_rect()
-        self.xspeed = 5
-        self.yspeed = 5
+        self.xspeed = 1
+        self.yspeed = 1
 
     def update(self):
         self.rect.x += self.xspeed
@@ -50,8 +51,7 @@ class Asteroid(pygame.sprite.Sprite):
 class Bullet(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface([4,10])
-        self.image.fill(BLACK)
+        self.image = load_image('Bullet.png')
         self.rect = self.image.get_rect()
         self.angle = 0
     def update(self):
@@ -77,11 +77,11 @@ def main():
     ship.rect.y = 400
     screen.blit(ship.image,ship.rect)
 
-    # ast = Asteroid('Small')
-    # ast.rect.x = 100
-    # ast.rect.y = 100
-    # asteroid_list.add(ast)
-    # asteroid_list.draw(screen)
+    ast = Asteroid('Small')
+    ast.rect.x = 100
+    ast.rect.y = 100
+    asteroid_list.add(ast)
+    asteroid_list.draw(screen)
 
     pygame.display.flip()
 
@@ -95,7 +95,7 @@ def main():
                 bullet = Bullet()
                 bullet.angle = ship.angle
                 bullet.rect.x = ship.rect.x + (ship.image.get_width() / 2)
-                bullet.rect.y = ship.rect.y
+                bullet.rect.y = ship.rect.y + (ship.image.get_width() / 2)
                 bullet_list.add(bullet)
 
         if keys[pygame.K_LEFT]:
@@ -105,32 +105,40 @@ def main():
             ship.angle -= 2
             ship.image = rot_center(original,ship.angle)
 
+        for b in bullet_list:
+            if pygame.sprite.collide_rect(b,ast):
+                pygame.sprite.Sprite.remove(ast)
+            
 
 
-        screen.fill(WHITE)
+        screen.fill(BLACK)
         screen.blit(ship.image,(400,400))
-
         bullet_list.update()
         asteroid_list.update()
+
+        for b in bullet_list:
+            if pygame.sprite.spritecollide(b,asteroid_list,True):
+                bullet_list.remove(b)
+        
         for b in bullet_list:
             if b.rect.y < -10:
                 bullet_list.remove(b)
             elif b.rect.y > 1010:
                 bullet_list.remove(b)
-            elif b.rect.x > 1004:
+            elif b.rect.x > 1010:
                 bullet_list.remove(b)
-            elif b.rect.x < -4:
+            elif b.rect.x < -10:
                 bullet_list.remove(b)
 
 
         bullet_list.draw(screen)
         asteroid_list.draw(screen)
-        # screen.blit(ast.image,(100,100))
+        screen.blit(ast.image,(100,100))
 
-        # ast = load_image('Asteroid.png')
-        # screen.blit(ast, (400,500))
-        # screen.blit(ast, (100,500))
-        # screen.blit(ast, (500,100))
+        #ast = load_image('Asteroid.png')
+        #screen.blit(ast, (400,500))
+        #screen.blit(ast, (100,500))
+        #screen.blit(ast, (500,100))
         pygame.display.flip()
         clock.tick(60)
     pygame.quit()
