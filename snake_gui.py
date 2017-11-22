@@ -12,8 +12,6 @@ def load_image(name):
     path = os.path.join(main_dir, name)
     return pygame.image.load(path).convert()
 
-
-    
 def rot_center(image,angle):
     orig_rect = image.get_rect()
     rot_image = pygame.transform.rotate(image, angle)
@@ -65,19 +63,18 @@ def main():
 
     done = False
     clock = pygame.time.Clock()
+    shoot_sound = pygame.mixer.Sound('laser5.ogg')
     original = load_image('Ship.png')
-    screen.fill(WHITE)
 
     bullet_list = pygame.sprite.Group()
     asteroid_list = pygame.sprite.Group()
-    sprite_list = pygame.sprite.Group()
 
     ship = SpaceShip()
     ship.rect.x = 400
     ship.rect.y = 400
     screen.blit(ship.image,ship.rect)
 
-    ast = Asteroid('Small')
+    ast = Asteroid('Big')
     ast.rect.x = 100
     ast.rect.y = 100
     asteroid_list.add(ast)
@@ -92,6 +89,7 @@ def main():
             if event.type == QUIT:
                 done = True
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                shoot_sound.play()
                 bullet = Bullet()
                 bullet.angle = ship.angle
                 bullet.rect.x = ship.rect.x + (ship.image.get_width() / 2)
@@ -105,40 +103,52 @@ def main():
             ship.angle -= 2
             ship.image = rot_center(original,ship.angle)
 
-        for b in bullet_list:
-            if pygame.sprite.collide_rect(b,ast):
-                pygame.sprite.Sprite.remove(ast)
-            
-
-
         screen.fill(BLACK)
-        screen.blit(ship.image,(400,400))
+        screen.blit(ship.image,ship.rect)
         bullet_list.update()
         asteroid_list.update()
 
+        for a in asteroid_list:
+            if pygame.sprite.collide_rect(a,ship):
+                done = True
+        if done:
+            continue
+
         for b in bullet_list:
-            if pygame.sprite.spritecollide(b,asteroid_list,True):
-                bullet_list.remove(b)
-        
+            for a in asteroid_list:
+                if pygame.sprite.collide_rect(b,a):
+                    bullet_list.remove(b)
+                    if a.ast_size == 'Big':
+                        rx = a.rect.x
+                        ry = a.rect.y
+                        a.ast_size = 'Medium'
+                        a.image = load_image('Asteroid2.png')
+                        a.rect = a.image.get_rect()
+                        a.rect.x = rx
+                        a.rect.y = ry
+                    elif a.ast_size == 'Medium':
+                        rx = a.rect.x
+                        ry = a.rect.y
+                        a.ast_size = 'Small'
+                        a.image = load_image('Asteroid3.png')
+                        a.rect = a.image.get_rect()
+                        a.rect.x = rx
+                        a.rect.y = ry
+                    else:
+                        asteroid_list.remove(a)
+
         for b in bullet_list:
             if b.rect.y < -10:
                 bullet_list.remove(b)
-            elif b.rect.y > 1010:
+            elif b.rect.y > 810:
                 bullet_list.remove(b)
-            elif b.rect.x > 1010:
+            elif b.rect.x > 810:
                 bullet_list.remove(b)
             elif b.rect.x < -10:
                 bullet_list.remove(b)
 
-
         bullet_list.draw(screen)
         asteroid_list.draw(screen)
-        screen.blit(ast.image,(100,100))
-
-        #ast = load_image('Asteroid.png')
-        #screen.blit(ast, (400,500))
-        #screen.blit(ast, (100,500))
-        #screen.blit(ast, (500,100))
         pygame.display.flip()
         clock.tick(60)
     pygame.quit()
