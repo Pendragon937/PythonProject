@@ -26,6 +26,14 @@ class SpaceShip(pygame.sprite.Sprite):
         self.image = load_image('Ship.png')
         self.rect = self.image.get_rect()
         self.angle = 0
+    def moveXY(self,forward):
+        if forward:
+            self.rect.y += 2 * math.sin(math.radians(-1 * self.angle - 90))
+            self.rect.x += 2 * math.cos(math.radians(-1 * self.angle - 90))
+        else:
+            self.rect.y -= 2 * math.sin(math.radians(-1 * self.angle - 90))
+            self.rect.x -= 2 * math.cos(math.radians(-1 * self.angle - 90))
+
 
 class Asteroid(pygame.sprite.Sprite):
     def __init__(self,ast_size):
@@ -38,12 +46,24 @@ class Asteroid(pygame.sprite.Sprite):
         else:
             self.image = load_image('Asteroid3.png')
         self.rect = self.image.get_rect()
-        self.xspeed = 1
-        self.yspeed = 1
+        self.xspeed = 0
+        self.yspeed = 0
 
     def update(self):
         self.rect.x += self.xspeed
         self.rect.y += self.yspeed
+
+    def offScreen(self):
+        if self.rect.y < -1 *self.image.get_height():
+            return True
+        elif self.rect.y > pygame.display.get_surface().get_height():
+            return True
+        elif self.rect.x < -1*self.image.get_width():
+            return True
+        elif self.rect.x > pygame.display.get_surface().get_width():
+            return True
+        else:
+            return False
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -55,6 +75,18 @@ class Bullet(pygame.sprite.Sprite):
     def update(self):
         self.rect.y += 5* math.sin(math.radians(-1*self.angle - 90))
         self.rect.x += 5* math.cos(math.radians(-1*self.angle - 90))
+
+    def offScreen(self):
+        if self.rect.y < -1 * self.image.get_height():
+            return True
+        elif self.rect.y > pygame.display.get_surface().get_height():
+            return True
+        elif self.rect.x < -1 * self.image.get_width():
+            return True
+        elif self.rect.x > pygame.display.get_surface().get_width():
+            return True
+        else:
+            return False
 
 def main():
     pygame.init() #initializes pygame
@@ -74,6 +106,8 @@ def main():
     ship.rect.y = 400
     screen.blit(ship.image,ship.rect)
 
+    # for a in range(4):
+    #     a = Asteroid('Big')
     ast = Asteroid('Big')
     ast.rect.x = 100
     ast.rect.y = 100
@@ -84,6 +118,7 @@ def main():
 
     # Event loop
     while not done:
+        #key events
         keys = pygame.key.get_pressed()
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -103,17 +138,25 @@ def main():
             ship.angle -= 2
             ship.image = rot_center(original,ship.angle)
 
+        if keys[pygame.K_UP]:
+            ship.moveXY(True)
+        elif keys[pygame.K_DOWN]:
+            ship.moveXY(False)
+
+        #update screen
         screen.fill(BLACK)
         screen.blit(ship.image,ship.rect)
         bullet_list.update()
         asteroid_list.update()
 
+        #asteroid, ship collision
         for a in asteroid_list:
             if pygame.sprite.collide_rect(a,ship):
                 done = True
         if done:
             continue
 
+        #bullet, asteroid collision
         for b in bullet_list:
             for a in asteroid_list:
                 if pygame.sprite.collide_rect(b,a):
@@ -137,15 +180,14 @@ def main():
                     else:
                         asteroid_list.remove(a)
 
+        #bullet, asteroid off screen
         for b in bullet_list:
-            if b.rect.y < -10:
+            if b.offScreen():
                 bullet_list.remove(b)
-            elif b.rect.y > 810:
-                bullet_list.remove(b)
-            elif b.rect.x > 810:
-                bullet_list.remove(b)
-            elif b.rect.x < -10:
-                bullet_list.remove(b)
+
+        for a in asteroid_list:
+            if a.offScreen():
+                asteroid_list.remove(a)
 
         bullet_list.draw(screen)
         asteroid_list.draw(screen)
