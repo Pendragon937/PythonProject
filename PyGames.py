@@ -129,7 +129,9 @@ def main():
     ast.rect.y = 100
     asteroid_list.add(ast)
     asteroid_list.draw(screen)
-
+    frame_count = 0
+    frame_rate = 60
+    start_time = 90
     pygame.display.flip()
 
     # Event loop
