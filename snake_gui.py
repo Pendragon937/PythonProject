@@ -30,7 +30,16 @@ class SpaceShip(pygame.sprite.Sprite):
         self.rect.y += 2 * math.sin(math.radians(-1 * (self.angle + 90)))
         self.rect.x += 2 * math.cos(math.radians(-1 * (self.angle + 90)))
 
+    def wrap(self):
+        if self.rect.y > pygame.display.get_surface().get_height():
+            self.rect.y = 0 - self.image.get_height()
+        elif self.rect.y < 0 - self.image.get_height():
+            self.rect.y = pygame.display.get_surface().get_height()
 
+        if self.rect.x > pygame.display.get_surface().get_width():
+            self.rect.x = 1 - self.image.get_width()
+        elif self.rect.x < 0 - self.image.get_width():
+            self.rect.x = pygame.display.get_surface().get_width()
 
 class Asteroid(pygame.sprite.Sprite):
     def __init__(self,ast_size):
@@ -105,6 +114,18 @@ class Asteroid(pygame.sprite.Sprite):
             return ast
         else:
             return 'empty'
+
+    def wrap(self):
+        if self.rect.y > pygame.display.get_surface().get_height():
+            self.rect.y = 0 - self.image.get_height()
+        elif self.rect.y < 0 - self.image.get_height():
+            self.rect.y = pygame.display.get_surface().get_height()
+
+        if self.rect.x > pygame.display.get_surface().get_width():
+            self.rect.x = 1 - self.image.get_width()
+        elif self.rect.x < 0 - self.image.get_width():
+            self.rect.x = pygame.display.get_surface().get_width()
+
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -200,8 +221,8 @@ def main():
         screen.blit(text, [0, 0])
 
         #display score
-        scor = font.render(output_string, True, WHITE)
-        screen.blit(scor, [0, 2])
+        scor = font.render("Score: "+ str(score), True, WHITE)
+        screen.blit(scor, [700, 2])
 
         #asteroid, ship collision
         for a in asteroid_list:
@@ -229,19 +250,8 @@ def main():
                 bullet_list.remove(b)
 
         for a in asteroid_list:
-            if a.rect.y > 800:
-                a.rect.y = 0 - a.image.get_height()
-                score += 1
-            elif a.rect.y < 0 - a.image.get_height():
-                a.rect.y = 800
-                score += 1
-            if a.rect.x > 800:
-                a.rect.x = 1 - a.image.get_width()
-                score += 1
-            elif a.rect.x < 0 - a.image.get_width():
-                a.rect.x = 800
-                score += 1
-
+            a.wrap()
+        ship.wrap()
         frame_count += 1
         bullet_list.draw(screen)
         asteroid_list.draw(screen)
