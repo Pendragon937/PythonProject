@@ -212,8 +212,14 @@ def main():
                 bullet_list.remove(b)
 
         for a in asteroid_list:
-            if a.offScreen():
-                asteroid_list.remove(a)
+            if a.rect.y > 800:
+                a.rect.y = 0 - a.image.get_height()
+            elif a.rect.y < 0 - a.image.get_height():
+                a.rect.y = 800
+            if a.rect.x > 800:
+                a.rect.x = 1 - a.image.get_width()
+            elif a.rect.x < 0 - a.image.get_width():
+                a.rect.x = 800
 
         bullet_list.draw(screen)
         asteroid_list.draw(screen)
