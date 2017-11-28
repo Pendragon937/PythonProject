@@ -156,6 +156,7 @@ def main():
     asteroid_list.add(ast)
     asteroid_list.draw(screen)
     frame_count = 0
+    score = 0
 
     pygame.display.flip()
 
@@ -191,12 +192,16 @@ def main():
         asteroid_list.update()
 
         #update timer      
-        total_seconds = frame_count // frame_rate
+        total_seconds = frame_count // 60
         minutes = total_seconds // 60
         seconds = total_seconds % 60
         output_string = "Time : {0:02}:{1:02}".format(minutes, seconds)
-        text = font.render(output_string, True, BLACK)
-        screen.blit(text, [250, 250])
+        text = font.render(output_string, True, WHITE)
+        screen.blit(text, [0, 0])
+
+        #display score
+        scor = font.render(output_string, True, WHITE)
+        screen.blit(scor, [0, 2])
 
         #asteroid, ship collision
         for a in asteroid_list:
@@ -209,12 +214,14 @@ def main():
         for b in bullet_list:
             for a in asteroid_list:
                 if pygame.sprite.collide_rect(b,a):
+                    score += 1
                     bullet_list.remove(b)
                     ast = a.split()
                     if ast == 'empty':
                         asteroid_list.remove(a)
                     else:
                         asteroid_list.add(ast)
+                        
 
         #bullet, asteroid off screen
         for b in bullet_list:
@@ -224,12 +231,16 @@ def main():
         for a in asteroid_list:
             if a.rect.y > 800:
                 a.rect.y = 0 - a.image.get_height()
+                score += 1
             elif a.rect.y < 0 - a.image.get_height():
                 a.rect.y = 800
+                score += 1
             if a.rect.x > 800:
                 a.rect.x = 1 - a.image.get_width()
+                score += 1
             elif a.rect.x < 0 - a.image.get_width():
                 a.rect.x = 800
+                score += 1
 
         frame_count += 1
         bullet_list.draw(screen)
