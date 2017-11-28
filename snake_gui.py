@@ -136,6 +136,7 @@ def main():
 
     done = False
     clock = pygame.time.Clock()
+    font = pygame.font.Font(None, 25)
     shoot_sound = pygame.mixer.Sound('laser5.ogg')
     original = load_image('Ship.png')
 
@@ -154,6 +155,7 @@ def main():
     ast.rect.y = 100
     asteroid_list.add(ast)
     asteroid_list.draw(screen)
+    frame_count = 0
 
     pygame.display.flip()
 
@@ -188,6 +190,14 @@ def main():
         bullet_list.update()
         asteroid_list.update()
 
+        #update timer      
+        total_seconds = frame_count // frame_rate
+        minutes = total_seconds // 60
+        seconds = total_seconds % 60
+        output_string = "Time : {0:02}:{1:02}".format(minutes, seconds)
+        text = font.render(output_string, True, BLACK)
+        screen.blit(text, [250, 250])
+
         #asteroid, ship collision
         for a in asteroid_list:
             if pygame.sprite.collide_rect(a,ship):
@@ -221,6 +231,7 @@ def main():
             elif a.rect.x < 0 - a.image.get_width():
                 a.rect.x = 800
 
+        frame_count += 1
         bullet_list.draw(screen)
         asteroid_list.draw(screen)
         pygame.display.flip()
