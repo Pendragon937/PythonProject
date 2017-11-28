@@ -26,13 +26,10 @@ class SpaceShip(pygame.sprite.Sprite):
         self.image = load_image('Ship.png')
         self.rect = self.image.get_rect()
         self.angle = 0
-    def moveXY(self,forward):
-        if forward:
-            self.rect.y += 2 * math.sin(math.radians(-1 * self.angle - 90))
-            self.rect.x += 2 * math.cos(math.radians(-1 * self.angle - 90))
-        else:
-            self.rect.y -= 2 * math.sin(math.radians(-1 * self.angle - 90))
-            self.rect.x -= 2 * math.cos(math.radians(-1 * self.angle - 90))
+    def moveXY(self):
+        self.rect.y += 2 * math.sin(math.radians(-1 * self.angle - 90))
+        self.rect.x += 2 * math.cos(math.radians(-1 * self.angle - 90))
+
 
 
 class Asteroid(pygame.sprite.Sprite):
@@ -46,8 +43,8 @@ class Asteroid(pygame.sprite.Sprite):
         else:
             self.image = load_image('Asteroid3.png')
         self.rect = self.image.get_rect()
-        self.xspeed = 0
-        self.yspeed = 0
+        self.xspeed = 1
+        self.yspeed = 1
 
     def update(self):
         self.rect.x += self.xspeed
@@ -64,6 +61,23 @@ class Asteroid(pygame.sprite.Sprite):
             return True
         else:
             return False
+    def split(self):
+        rx = self.rect.x
+        ry = self.rect.y
+        if self.ast_size == 'Big':
+            self.ast_size = 'Medium'
+            self.image = load_image('Asteroid2.png')
+            self.rect = self.image.get_rect()
+            self.rect.x = rx
+            self.rect.y = ry
+        elif self.ast_size == 'Medium':
+            self.ast_size = 'Small'
+            self.image = load_image('Asteroid3.png')
+            self.rect = self.image.get_rect()
+            self.rect.x = rx
+            self.rect.y = ry
+        else:
+            return 'empty'
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -139,9 +153,7 @@ def main():
             ship.image = rot_center(original,ship.angle)
 
         if keys[pygame.K_UP]:
-            ship.moveXY(True)
-        elif keys[pygame.K_DOWN]:
-            ship.moveXY(False)
+            ship.moveXY()
 
         #update screen
         screen.fill(BLACK)
@@ -161,23 +173,8 @@ def main():
             for a in asteroid_list:
                 if pygame.sprite.collide_rect(b,a):
                     bullet_list.remove(b)
-                    if a.ast_size == 'Big':
-                        rx = a.rect.x
-                        ry = a.rect.y
-                        a.ast_size = 'Medium'
-                        a.image = load_image('Asteroid2.png')
-                        a.rect = a.image.get_rect()
-                        a.rect.x = rx
-                        a.rect.y = ry
-                    elif a.ast_size == 'Medium':
-                        rx = a.rect.x
-                        ry = a.rect.y
-                        a.ast_size = 'Small'
-                        a.image = load_image('Asteroid3.png')
-                        a.rect = a.image.get_rect()
-                        a.rect.x = rx
-                        a.rect.y = ry
-                    else:
+                    ast = a.split()
+                    if ast == 'empty':
                         asteroid_list.remove(a)
 
         #bullet, asteroid off screen
