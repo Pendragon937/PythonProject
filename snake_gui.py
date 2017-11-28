@@ -1,4 +1,4 @@
-import os, pygame,math
+import os, pygame,math,random
 from pygame.locals import *
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
@@ -52,8 +52,10 @@ class Asteroid(pygame.sprite.Sprite):
         else:
             self.image = load_image('Asteroid3.png')
         self.rect = self.image.get_rect()
-        self.xspeed = 1
-        self.yspeed = 1
+        x = random.randint(-1500,1500)/1000.0
+        y = random.randint(-1500,1500)/1000.0
+        self.xspeed = x
+        self.yspeed = y
 
     def update(self):
         self.rect.x += self.xspeed
@@ -169,15 +171,22 @@ def main():
     ship.rect.y = 400
     screen.blit(ship.image,ship.rect)
 
-    # for a in range(4):
-    #     a = Asteroid('Big')
-    ast = Asteroid('Big')
-    ast.rect.x = 100
-    ast.rect.y = 100
-    asteroid_list.add(ast)
-    asteroid_list.draw(screen)
+    n = 4
+    i = 0
     frame_count = 0
     score = 0
+    while i < n:
+        i += 1
+        tx = 400
+        ty = 400
+        while tx > 200 and tx < 600 and ty > 200 and ty < 600:
+            tx = random.random()*800
+            ty = random.random()*800
+            
+        New = Asteroid('Big')
+        New.rect.x = tx
+        New.rect.y = ty
+        asteroid_list.add(New)
 
     pygame.display.flip()
 
@@ -205,6 +214,8 @@ def main():
 
         if keys[pygame.K_UP]:
             ship.moveXY()
+
+        
 
         #update screen
         screen.fill(BLACK)
