@@ -27,8 +27,8 @@ class SpaceShip(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.angle = 0
     def moveXY(self):
-        self.rect.y += 2 * math.sin(math.radians(-1 * self.angle - 90))
-        self.rect.x += 2 * math.cos(math.radians(-1 * self.angle - 90))
+        self.rect.y += 2 * math.sin(math.radians(-1 * (self.angle + 90)))
+        self.rect.x += 2 * math.cos(math.radians(-1 * (self.angle + 90)))
 
 
 
@@ -65,17 +65,44 @@ class Asteroid(pygame.sprite.Sprite):
         rx = self.rect.x
         ry = self.rect.y
         if self.ast_size == 'Big':
+            #reduce current asteroid size
             self.ast_size = 'Medium'
             self.image = load_image('Asteroid2.png')
             self.rect = self.image.get_rect()
             self.rect.x = rx
             self.rect.y = ry
+
+            temp = self.xspeed
+            ast = Asteroid('Medium') #spawn new asteroid of same size as current
+
+            # vector perp to <xspeed, yspeed> are <-yspeed,xpseed> and <yspeed,-xspeed>
+            ast.xspeed = -1*self.yspeed
+            ast.yspeed =  temp
+            ast.rect.x = rx
+            ast.rect.y = ry
+
+            self.xspeed = -1 * ast.xspeed
+            self.yspeed = -1 * ast.yspeed
+            return ast
         elif self.ast_size == 'Medium':
             self.ast_size = 'Small'
             self.image = load_image('Asteroid3.png')
             self.rect = self.image.get_rect()
             self.rect.x = rx
             self.rect.y = ry
+
+            temp = self.xspeed
+            ast = Asteroid('Small')  # spawn new asteroid of same size as current
+
+            # vector perp to <xspeed, yspeed> are <-yspeed,xpseed> and <yspeed,-xspeed>
+            ast.xspeed = -1 * self.yspeed
+            ast.yspeed = temp
+            ast.rect.x = rx
+            ast.rect.y = ry
+
+            self.xspeed = -1 * ast.xspeed
+            self.yspeed = -1 * ast.yspeed
+            return ast
         else:
             return 'empty'
 
@@ -176,6 +203,8 @@ def main():
                     ast = a.split()
                     if ast == 'empty':
                         asteroid_list.remove(a)
+                    else:
+                        asteroid_list.add(ast)
 
         #bullet, asteroid off screen
         for b in bullet_list:
