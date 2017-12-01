@@ -1,4 +1,4 @@
-import os, pygame,math,random
+import os, pygame,math,random,time
 from pygame.locals import *
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
@@ -268,6 +268,10 @@ def main():
         asteroid_list.draw(screen)
         pygame.display.flip()
         clock.tick(60)
+    gameover = font.render("Game Over",True,WHITE)
+    screen.blit(gameover,[350,400])
+    pygame.display.flip()
+    time.sleep(3)
     pygame.quit()
 
 if __name__  == '__main__': main()
