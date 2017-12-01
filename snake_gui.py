@@ -153,6 +153,8 @@ class Bullet(pygame.sprite.Sprite):
             return False
 
 def main():
+    pygame.mixer.pre_init(44100, -16, 2, 2048)
+    pygame.mixer.init()
     pygame.init() #initializes pygame
     screen = pygame.display.set_mode((800,800))
     pygame.display.set_caption('Asteroid')
