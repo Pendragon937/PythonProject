@@ -27,8 +27,8 @@ class SpaceShip(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.angle = 0
     def moveXY(self):
-        self.rect.y += 2 * math.sin(math.radians(-1 * (self.angle + 90)))
-        self.rect.x += 2 * math.cos(math.radians(-1 * (self.angle + 90)))
+        self.rect.y += 2.5 * math.sin(math.radians(-1 * (self.angle + 90)))
+        self.rect.x += 2.5 * math.cos(math.radians(-1 * (self.angle + 90)))
 
     def wrap(self):
         if self.rect.y > pygame.display.get_surface().get_height():
