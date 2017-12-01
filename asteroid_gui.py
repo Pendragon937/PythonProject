@@ -52,8 +52,16 @@ class Asteroid(pygame.sprite.Sprite):
         else:
             self.image = load_image('Asteroid3.png')
         self.rect = self.image.get_rect()
-        x = random.randint(-1500,1500)/1000.0
-        y = random.randint(-1500,1500)/1000.0
+        x = random.randint(-500,500)/1000.0
+        y = random.randint(-500,500)/1000.0 
+        if x < 0:
+            x = x - 1
+        else:
+            x = x + 1
+        if y < 0:
+            y = y - 1
+        else:
+            y = y + 1
         self.xspeed = x
         self.yspeed = y
 
